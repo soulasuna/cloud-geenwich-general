@@ -1,0 +1,25 @@
+server:
+  port: 11000
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      #高可用eureka-server链接配置
+#      defaultZone: http://athos_admin:athos_admin@eureka-athos-17771.com:17771/eureka,http://bordos_admin:bordos_admin@eureka-bordos-17772.com:17772/eureka,http://alames_admin:alames_admin@eureka-alames-17773.com:17773/eureka
+      defaultZone: http://admin:admin@localhost:8761/eureka
+spring:
+  application:
+    name: suncloud-gateway
+#  cloud:
+#    config:
+#      profile: dev
+#      label: master
+      #允许在eureka注册中心中自动发现suncloud-config-server的实例
+#      discovery:
+#        enabled: true
+#        service-id: suncloud-config-server
+#    bus:
+#      enabled: true
+#      trace:
+#        enabled: true

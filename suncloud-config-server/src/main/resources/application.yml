@@ -1,0 +1,37 @@
+server:
+  port: 18888
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:admin@localhost:18761/eureka
+  instance:
+    prefer-ip-address: true
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/soulasuna/suncloud-config-repository
+          username: soulasuna
+          password: 119851houyang
+      label: master
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+  application:
+    name: suncloud-config-server
+  rabbitmq:
+    host: 192.168.110.110
+    port: 5672
+    username: soulasuna
+    password: root_rabbitmq
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
+#集成健康监测actuator组件,开启/actuator/health健康监测
+  endpoint:
+    health:
+      show-details: never

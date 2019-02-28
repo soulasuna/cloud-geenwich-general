@@ -1,0 +1,19 @@
+server:
+  port: 18761
+spring:
+  application:
+    name: suncloud-eureka-server
+#开启权限认证
+  security:
+    user:
+      name: admin
+      password: admin
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+

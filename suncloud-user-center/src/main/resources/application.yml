@@ -1,0 +1,56 @@
+spring:
+  # application:
+  #   name: suncloud-merchant
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.110.110:3306/cloud_user_center?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: root
+      password: root_mysql
+      #连接池初始化,最小,最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 200
+      #获取连接超时时间
+      max-wait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置单个连接最小存活时间,单位毫秒
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      #druid连接池开启慢sql监控
+      filters: stat,wall,slf4j,config
+      connect-properties:
+        druid:
+          stat:
+            mergeSql: true
+            slowSqlMillis: 5000
+
+#springboot整合mybatis配置
+mybatis:
+  #mapper文件加载路径
+  mapper-locations: classpath*:**/Mapper/*.xml
+  #javabean所在的基础包(可以是父级包名)
+  type-aliases-package: com.dnt.cloud.common.pojo
+  #mybatis的配置
+  configuration:
+    #数据库中null值也调用setter方法
+    call-setters-on-nulls: true
+    #驼峰命名与下划线相互转换
+    map-underscore-to-camel-case: true
+
+#系统变量配
+custom:
+  config:
+    druid:
+      servlet:
+        ip-white-allow-list: 127.0.0.1
+        ip-black-deny-list: 192.168.110.111
+        reset-enable: false
+        login-user-name: admin
+        login-pass-word: admin_druid

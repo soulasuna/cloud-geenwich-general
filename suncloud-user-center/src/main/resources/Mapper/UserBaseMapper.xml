@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dnt.cloud.user.center.dao.UserBaseMapper">
+    <resultMap id="userBaseResultMap" type="com.dnt.cloud.common.framework.pojo.domain.usercenter.UserBase" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="pass_word" property="passWord" jdbcType="VARCHAR" />
+    </resultMap>
+    <!--全部字段-->
+    <sql id="base_column_list">
+      id,user_name,pass_word
+    </sql>
+
+    <!--根据id获得对象-->
+    <select id="getOne" resultMap="userBaseResultMap">
+        SELECT
+          <include refid="base_column_list"/>
+        FROM
+          `user_base`
+        WHERE
+          id = #{id,jdbcType=BIGINT}
+    </select>
+</mapper>

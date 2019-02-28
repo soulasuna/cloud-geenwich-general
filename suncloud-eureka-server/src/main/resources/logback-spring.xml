@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+根节点: configuration 包含三个参数
+参数说明: 
+    scan: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+    scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+    debug: 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+ -->
+<configuration scan="true" scanPeriod="60 seconds" debug = "false">
+  <!-- 引入spring的日志
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  -->
+
+  <!-- 
+      子节点<property> ：用来定义变量值，它有两个属性name和value，通过<property>定义的值会被插入到logger上下文中，可以使“${}”来使用变量。
+   -->
+  <property name="LOG_BASE" value="D:\\suncloud\\logs" />
+  <property name="LOG_APP_NAME" value="\\suncloud-eureka-server" />
+  <property name="LOG_APP_SCOPE" value="\\dev" />
+  <!-- 最终日志文件保存路径 -->
+  <property name="LOG_FILE" value="${LOG_BASE}\${LOG_APP_NAME}\${LOG_APP_SCOPE}" />
+
+  <!-- 日志信息输出格式 待定-->
+  <property name="LOG_PRINT_FORMAT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+
+  <!-- LOG_CONSOLE控制台日志打印 -->
+  <appender name="LOG_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 日志打印级别 -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <!-- 日志输出格式字符集 -->
+    <encoder>
+      <pattern>${LOG_PRINT_FORMAT}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <!-- LOG_INFO文件保存info级别日志 -->
+  <appender name="LOG_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 日志文件保存文件路径 -->
+    <file>${LOG_FILE}\\info\\logback.log</file>
+    <!-- 日志记录器的滚动策略，按日期分割 -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!--
+          归档的日志文件的路径.
+          例如:
+              今天是2013-12-21日志，当前写的日志文件路径为file节点指定，
+              可以将此文件与file指定文件路径设置为不同路径，从而将当前日志文件或归档日志文件置不同的目录。
+              而2013-12-21的日志文件在由fileNamePattern指定,%d{yyyy-MM-dd}指定日期格式，%i指定索引
+      -->
+      <fileNamePattern>${LOG_FILE}\\logback-info-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <!-- 保存日志天数 两周 -->
+      <maxHistory>7</maxHistory>
+      <!--
+          除按日志记录之外，还配置了日志文件不能超过2M，若超过2M，日志文件会以索引0开始，
+          命名日志文件，例如:logout-info-2013-12-21.0.gz
+      -->
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>20MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <!-- 追加方式记录日志 -->
+    <append>true</append>
+    <!-- 日志打印格式 -->
+    <encoder>
+      <pattern>${LOG_PRINT_FORMAT}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+    <!-- 此日志文件只记录INFO级别的 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <!-- LOG_INFO文件保存info级别日志 -->
+  <appender name="LOG_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_FILE}\\error\\logback.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!--
+      归档的日志文件的路径.
+      例如:
+          今天是2013-12-21日志，当前写的日志文件路径为file节点指定，
+          可以将此文件与file指定文件路径设置为不同路径，从而将当前日志文件或归档日志文件置不同的目录。
+          而2013-12-21的日志文件在由fileNamePattern指定,%d{yyyy-MM-dd}指定日期格式，%i指定索引
+      -->
+      <fileNamePattern>${LOG_FILE}\\logback-error-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <!-- 保存日志天数 错误日志保存30天 -->
+      <maxHistory>30</maxHistory>
+      <!--
+          除按日志记录之外，还配置了日志文件不能超过2M，若超过2M，日志文件会以索引0开始，
+          命名日志文件，例如:logout-info-2013-12-21.0.gz
+      -->
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>20MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <!-- 追加方式记录日志 -->
+    <append>true</append>
+    <!-- 日志打印格式 -->
+    <encoder>
+      <pattern>${LOG_PRINT_FORMAT}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+    <!-- 此日志文件只记录INFO级别的 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <!-- Appender to log to file in a JSON format
+  <appender name="LOG_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_FILE}.json</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_FILE}.json.%d{yyyy-MM-dd}.gz</fileNamePattern>
+      <maxHistory>7</maxHistory>
+    </rollingPolicy>
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>UTC</timeZone>
+        </timestamp>
+        <pattern>
+          <pattern>
+            {
+              "severity": "%level",
+              "service": "${springAppName:-}",
+              "trace": "%X{X-B3-TraceId:-}",
+              "span": "%X{X-B3-SpanId:-}",
+              "parent": "%X{X-B3-ParentSpanId:-}",
+              "exportable": "%X{X-Span-Export:-}",
+              "pid": "${PID:-}",
+              "thread": "%thread",
+              "class": "%logger{40}",
+              "rest": "%message"
+            }
+          </pattern>
+        </pattern>
+      </providers>
+    </encoder>
+  </appender>
+  -->
+
+  <!-- spring框架的日志 -->
+  <logger name="org.springframework" level="WARN"/>
+  <!-- mybatis日志打印 -->
+  <logger name="com.ibatis" level="INFO"/>
+  <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="INFO"/>
+  <logger name="com.ibatis.common.jdbc.ScriptRunner" level="INFO"/>
+  <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="INFO"/>
+  <logger name="java.sql.Statement" level="INFO"/>
+  <!-- 需要(日志,控制台)打印sql的这三项配置成DEBUG,CONSOLE就可以 -->
+  <logger name="java.sql.Connection" level="DEBUG"/>
+  <logger name="java.sql.ResultSet" level="DEBUG"/>
+  <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+
+  <!--设置执行那个 appender -->
+  <root>
+    <appender-ref ref="LOG_CONSOLE"/>
+    <!-- 本地测试无需开启 生产根据情况打开-->
+    <appender-ref ref="LOG_INFO"/>
+    <appender-ref ref="LOG_ERROR"/>
+    <!-- 以后整合日志采集使用目前不打开
+    <appender-ref ref="LOG_JSON"/>
+    -->
+  </root>
+</configuration>

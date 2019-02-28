@@ -1,0 +1,51 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          #开启eureka服务发现组件,通过server-id进行服务调用,默认为false
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+      - id: suncloud-user-center
+        uri: lb://suncloud-user-center
+        #请求断言参数列表,当进行多个断言配置时必须同时满足
+        predicates:
+          - Path=/userBase/**
+        filters:
+        #基于hystrix实现服务降级
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+
+        #基于redis的请求限流
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@headKeyResolver}'
+            #使用令牌桶原理实现的限流
+            #replenishRate:每秒会向令牌桶里添加多少个令牌
+            #相当于每秒允许处理多少个请求
+            redis-rate-limiter.replenishRate: 10
+            #burstCapacity:令牌桶最大的容量
+            #相当于一秒钟内允许最大请求数
+            redis-rate-limiter.burstCapacity: 20
+        #自定义token过滤器
+        - name: Token
+          args:
+            enabled: true
+
+      - id: suncloud-user-center
+        uri: lb://suncloud-user-center
+        predicates:
+          - Path=/test/**
+
+      - id: suncloud-organization
+        uri: lb://SUNCLOUD-ORGANIZATION
+        predicates:
+          - Path=/organization/**
+  redis:
+    host: 192.168.110.110
+    port: 6379
+    database: 0
+    password: root_redis
